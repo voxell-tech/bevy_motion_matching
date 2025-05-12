@@ -24,7 +24,9 @@ impl Plugin for UiPlugin {
         #[cfg(feature = "debug")]
         app.add_plugins(WorldInspectorPlugin::new());
         #[cfg(not(feature = "debug"))]
-        app.add_plugins(EguiPlugin);
+        app.add_plugins(EguiPlugin {
+            enable_multipass_for_primary_context: true,
+        });
 
         app.init_resource::<MouseInUi>()
             .init_resource::<config::BvhTrailConfig>()
@@ -95,7 +97,7 @@ fn right_panel(
 
             if ui.button("Reset Player").clicked() {
                 let mut evw_reset_player = reset_player.get_mut(world);
-                evw_reset_player.send(ResetPlayer);
+                evw_reset_player.write(ResetPlayer);
             }
 
             egui::ScrollArea::vertical().show(ui, |ui| match *page {

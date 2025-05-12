@@ -1,7 +1,7 @@
 use bevy::{
     asset::{DependencyLoadState, LoadState, RecursiveDependencyLoadState},
+    platform::collections::HashMap,
     prelude::*,
-    utils::hashbrown::HashMap,
 };
 use bevy_bvh_anim::{bvh_anim::ChannelType, prelude::*};
 
@@ -35,7 +35,7 @@ fn generate_bone_map(
     server: Res<AssetServer>,
     mut asset_loaded: Local<bool>,
 ) {
-    let Ok((entity, scene_root)) = q_character.get_single() else {
+    let Ok((entity, scene_root)) = q_character.single() else {
         return;
     };
 
@@ -64,7 +64,7 @@ fn generate_bone_map(
             q_transforms: &Query<&Transform>,
         ) {
             if let Ok(children) = q_children.get(parent) {
-                for &child in children.iter() {
+                for child in children.iter() {
                     for _ in 0..indent {
                         print!("| ");
                     }

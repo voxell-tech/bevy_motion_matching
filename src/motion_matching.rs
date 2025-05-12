@@ -91,7 +91,7 @@ fn flow(
         let index = motion_player.target_pair_index();
         let Some(traj_pose) = &traj_pose_pair[index] else {
             // Find a new animation to play.
-            traj_match_evw.send(TrajectoryMatch(entity));
+            traj_match_evw.write(TrajectoryMatch(entity));
             continue;
         };
 
@@ -101,7 +101,7 @@ fn flow(
                 continue;
             }
             false => {
-                pred_match_evw.send(PredictionMatch {
+                pred_match_evw.write(PredictionMatch {
                     motion_pose: *traj_pose.motion_pose(),
                     entity,
                 });
@@ -154,7 +154,7 @@ fn prediction_match(
             trajectory_data.get_chunk(pred_match.chunk_index),
             pose_data.is_chunk_loopable(pred_match.chunk_index),
         ) else {
-            traj_match_evw.send(TrajectoryMatch(pred_match.entity));
+            traj_match_evw.write(TrajectoryMatch(pred_match.entity));
             continue;
         };
 
@@ -163,7 +163,7 @@ fn prediction_match(
             match loopable {
                 true => chunk_offset = 0,
                 false => {
-                    traj_match_evw.send(TrajectoryMatch(pred_match.entity));
+                    traj_match_evw.write(TrajectoryMatch(pred_match.entity));
                     continue;
                 }
             }
@@ -186,7 +186,7 @@ fn prediction_match(
             .collect::<Vec<_>>();
 
         if traj.distance(&data_traj) > match_config.pred_match_threshold {
-            traj_match_evw.send(TrajectoryMatch(pred_match.entity));
+            traj_match_evw.write(TrajectoryMatch(pred_match.entity));
         }
     }
 }
@@ -301,7 +301,7 @@ fn trajectory_match(
                 / runs as f64;
         motion_matching_result.matching_result.runs = runs;
 
-        nearest_trajectories_evw.send(NearestTrajectories {
+        nearest_trajectories_evw.write(NearestTrajectories {
             trajectories: nearest_trajs,
             entity,
         });
@@ -378,7 +378,7 @@ fn pose_match(
         motion_matching_result.selected_trajectory = best_traj_index;
 
         let best_traj = &trajs[best_traj_index];
-        jump_evw.send(JumpToPose {
+        jump_evw.write(JumpToPose {
             motion_pose: MotionPose {
                 chunk_index: best_traj.chunk_index,
                 time: motion_asset

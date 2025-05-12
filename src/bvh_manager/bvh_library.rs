@@ -1,7 +1,8 @@
 use std::{fs, path::PathBuf, str::FromStr};
 
-use bevy::{prelude::*, utils::HashSet};
+use bevy::prelude::*;
 use bevy_bvh_anim::prelude::*;
+use bevy_platform::collections::HashSet;
 
 pub const BVH_FOLDER: &str = "bvh";
 pub const BVH_MAP_FOLDER: &str = "bvh_map";

@@ -120,7 +120,7 @@ fn bvh_trail_config(ui: &mut egui::Ui, world: &mut World) {
 
 fn show_character_checkbox(ui: &mut egui::Ui, world: &mut World) {
     let mut q_main_scene = world.query_filtered::<&mut Visibility, With<MainScene>>();
-    let Ok(mut main_scene_vis) = q_main_scene.get_single_mut(world) else {
+    let Ok(mut main_scene_vis) = q_main_scene.single_mut(world) else {
         return;
     };
 
@@ -144,7 +144,7 @@ fn draw_trajectory_checkbox(ui: &mut egui::Ui, world: &mut World) {
 
 fn show_ground_checkbox(ui: &mut egui::Ui, world: &mut World) {
     let mut q_ground = world.query_filtered::<&mut Visibility, With<GroundPlane>>();
-    let Ok(mut vis) = q_ground.get_single_mut(world) else {
+    let Ok(mut vis) = q_ground.single_mut(world) else {
         return;
     };
 

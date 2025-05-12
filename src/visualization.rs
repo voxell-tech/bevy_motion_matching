@@ -49,7 +49,7 @@ fn draw_nearest_traj_arrow(
         return;
     };
 
-    let Ok(player_transform) = q_player_transform.get_single() else {
+    let Ok(player_transform) = q_player_transform.single() else {
         return;
     };
 
@@ -130,7 +130,7 @@ fn draw_nearest_pose_armature(
         return;
     };
 
-    let Ok(player_transform) = q_player_transform.get_single() else {
+    let Ok(player_transform) = q_player_transform.single() else {
         return;
     };
 

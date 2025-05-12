@@ -26,7 +26,6 @@ pub trait FrameExt {
 }
 
 impl FrameExt for Frame {
-    #[must_use]
     fn get_pos_rot(&self, joint_data: &JointData) -> (Vec3, Quat) {
         let mut pos = Vec3::ZERO;
         let mut euler = Vec3::ZERO;
@@ -52,7 +51,6 @@ impl FrameExt for Frame {
         )
     }
 
-    #[must_use]
     fn get_pos(&self, joint_data: &JointData) -> Vec3 {
         let mut pos = Vec3::ZERO;
 
@@ -72,7 +70,6 @@ impl FrameExt for Frame {
         pos
     }
 
-    #[must_use]
     fn get_rot(&self, joint_data: &JointData) -> Quat {
         let mut euler = Vec3::ZERO;
 
