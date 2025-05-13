@@ -8,6 +8,8 @@
 Motion matching enables characters to smoothly transition between animations by finding the best matching pose and trajectory from an extensive database, without the need to create state machines.
 Gameplay logic can be embedded side by side with motion matching by querying animations with the desired attributes.
 
+## Showcase
+
 ### Configuration
 
 ![config](./.github/assets/config.png)
@@ -15,6 +17,29 @@ Gameplay logic can be embedded side by side with motion matching by querying ani
 ### Play Mode
 
 ![play-mode](./.github/assets/play-mode.png)
+
+## Development
+
+### Prerequisites
+
+- Rust
+  - MSRV: v1.85.0
+- Cargo
+- Linux: [Bevy dependencies](https://github.com/bevyengine/bevy/blob/main/docs/linux_dependencies.md)
+- Optional, for the Visual Studio Code `start` task: `cargo-watch`
+  - `cargo install cargo-watch` or `cargo binstall cargo-watch`
+
+### Building
+
+```bash
+cargo build
+```
+
+### Running
+
+```bash
+cargo run --features bevy/dynamic_linking
+```
 
 ## Reference
 
