@@ -1,7 +1,7 @@
 use bevy::{ecs::system::SystemState, prelude::*};
 use bevy_egui::{
     egui::{self, Color32},
-    EguiContexts,
+    EguiContextPass, EguiContexts,
 };
 
 #[cfg(not(feature = "debug"))]
@@ -38,7 +38,7 @@ impl Plugin for UiPlugin {
             .init_resource::<builder::BuildConfigs>()
             .init_resource::<play_mode::MotionMatchingResult>()
             .add_systems(PreUpdate, reset_mouse_in_ui)
-            .add_systems(Update, right_panel.in_set(UiSystemSet));
+            .add_systems(EguiContextPass, right_panel.in_set(UiSystemSet));
     }
 }
 
