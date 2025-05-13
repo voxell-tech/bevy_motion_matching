@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["crates/*", ]
+members = ["crates/*"]
 
 [workspace.package]
 version = "0.1.0"
@@ -56,7 +56,7 @@ leafwing-input-manager = "0.17"
 # Debug editor (run with debug feature to enable it)
 bevy-inspector-egui = { version = "0.31", optional = true }
 kdtree = "0.7.0"
-peak_alloc = "0.2.1"
+peak_alloc = { git = "https://github.com/Steveplays28/peak_alloc", branch = "fix-usize-overflow" }
 clustering = "0.2.1"
 csv = "1.3.0"
 

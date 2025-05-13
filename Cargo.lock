@@ -4154,8 +4154,7 @@ checksum = "57c0d7b74b563b49d38dae00a0c37d4d6de9b432382b2892f0574ddcae73fd0a"
 [[package]]
 name = "peak_alloc"
 version = "0.2.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "29c4e8e2dd832fd76346468f822e4e600d30ba4e5aa545a128abf12cfae7ea3e"
+source = "git+https://github.com/Steveplays28/peak_alloc?branch=fix-usize-overflow#4054fdbbc56940759362566f69f97c2e8c759cd0"
 
 [[package]]
 name = "percent-encoding"
