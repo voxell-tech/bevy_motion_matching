@@ -76,12 +76,14 @@ fn right_panel(
     reset_player: &mut SystemState<EventWriter<ResetPlayer>>,
 ) {
     let (mut contexts, mut page) = params.get_mut(world);
-
-    let ctx = contexts.ctx_mut().clone();
+    let Some(context) = contexts.try_ctx_mut() else {
+        return;
+    };
+    let context = context.clone();
 
     egui::SidePanel::left("left_panel")
         .resizable(true)
-        .show(&ctx, |ui| {
+        .show(&context, |ui| {
             ui.add_space(10.0);
             ui.horizontal(|ui| {
                 if ui.button("Config").clicked() {
@@ -110,7 +112,7 @@ fn right_panel(
             });
         });
 
-    if ctx.is_pointer_over_area() {
+    if context.is_pointer_over_area() {
         let mut mouse_in_ui = world.resource_mut::<MouseInUi>();
         mouse_in_ui.set_is_inside();
     }
