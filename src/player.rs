@@ -101,7 +101,10 @@ fn movement_direction(
     if **run_preset_direction {
         return;
     }
-    let camera_transform = q_camera.single();
+    let Ok(camera_transform) = q_camera.single() else {
+        return;
+    };
+
     let mut action_axis = action
         .clamped_axis_pair(&PlayerAction::Walk)
         .normalize_or_zero();

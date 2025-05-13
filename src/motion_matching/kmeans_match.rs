@@ -198,7 +198,7 @@ fn trajectory_match_with_kmeans(
         motion_matching_result.matching_result.runs = runs;
         nearest_trajs.sort_by(|t0, t1| t0.distance.total_cmp(&t1.distance));
 
-        nearest_trajectories_evw.send(NearestTrajectories {
+        nearest_trajectories_evw.write(NearestTrajectories {
             trajectories: nearest_trajs,
             entity,
         });

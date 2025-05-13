@@ -188,20 +188,20 @@ fn trajectory_matching_visualization(ui: &mut egui::Ui, world: &mut World) {
 
         // Asset data's trajectory.
         let data_traj_arrows = Arrows::new(
+            "Data Trajectory (Matched)",
             PlotPoints::from_iter(data_traj[..data_traj.len() - 2].iter().cloned()),
             PlotPoints::from_iter(data_traj[1..].iter().cloned()),
         )
-        .color(Color32::LIGHT_YELLOW)
-        .name("Data Trajectory (Matched)");
+        .color(Color32::LIGHT_YELLOW);
 
         // Entity's trajectory.
         if traj_plot.len() >= 2 {
             let traj_arrows = Arrows::new(
+                "Trajectory",
                 PlotPoints::from_iter(traj_plot[..traj_plot.len() - 2].iter().cloned()),
                 PlotPoints::from_iter(traj_plot[1..].iter().cloned()),
             )
-            .color(Color32::LIGHT_BLUE)
-            .name("Trajectory");
+            .color(Color32::LIGHT_BLUE);
 
             // Plot the graph.
             Plot::new("trajectory_match_viz")
@@ -214,12 +214,12 @@ fn trajectory_matching_visualization(ui: &mut egui::Ui, world: &mut World) {
                 .show(ui, |plot_ui| {
                     // x-axis
                     plot_ui.line(
-                        Line::new(PlotPoints::from_iter([[0.0, 0.0], [0.2, 0.0]]))
+                        Line::new("X", PlotPoints::from_iter([[0.0, 0.0], [0.2, 0.0]]))
                             .color(Color32::RED),
                     );
                     // y-axis
                     plot_ui.line(
-                        Line::new(PlotPoints::from_iter([[0.0, 0.0], [0.0, 0.2]]))
+                        Line::new("Y", PlotPoints::from_iter([[0.0, 0.0], [0.0, 0.2]]))
                             .color(Color32::GREEN),
                     );
                     plot_ui.arrows(data_traj_arrows);

@@ -73,7 +73,7 @@ fn _test(
 
     // if input.just_pressed(KeyCode::Space) {
     //     for entity in q_entities.iter() {
-    //         jump_evw.send(JumpToPose {
+    //         jump_evw.write(JumpToPose {
     //             motion_pose: MotionPose {
     //                 chunk_index: 0,
     //                 time: 3.0,

@@ -152,7 +152,7 @@ fn trajectory_match_with_kdtree(
                 / runs as f64;
         motion_matching_result.matching_result.runs = runs;
 
-        nearest_trajectories_evw.send(NearestTrajectories {
+        nearest_trajectories_evw.write(NearestTrajectories {
             trajectories: nearest_trajs,
             entity,
         });

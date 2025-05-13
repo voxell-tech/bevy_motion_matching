@@ -72,7 +72,7 @@ fn armature_gizmos(
         }
 
         if let Ok(children) = q_children.get(parent) {
-            for &child in children.iter() {
+            for child in children.iter() {
                 if let Ok(transform) = q_transforms.get(child) {
                     let child_translation = transform.translation();
 
@@ -99,7 +99,7 @@ fn armature_gizmos(
         }
     }
 
-    if let Ok((entity, transform)) = q_character.get_single() {
+    if let Ok((entity, transform)) = q_character.single() {
         recursive_draw(
             0,
             entity,

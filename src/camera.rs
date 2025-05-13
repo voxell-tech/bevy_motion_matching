@@ -188,7 +188,7 @@ fn pan_orbit_camera(
         {
             if is_focus {
                 camera_focus.clear();
-            } else if let Ok(entity) = q_main_scene.get_single() {
+            } else if let Ok(entity) = q_main_scene.single() {
                 camera_focus.set(entity);
             }
         }

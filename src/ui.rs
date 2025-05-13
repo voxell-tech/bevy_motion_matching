@@ -1,7 +1,7 @@
 use bevy::{ecs::system::SystemState, prelude::*};
 use bevy_egui::{
     egui::{self, Color32},
-    EguiContexts,
+    EguiContextPass, EguiContexts,
 };
 
 #[cfg(not(feature = "debug"))]
@@ -24,7 +24,9 @@ impl Plugin for UiPlugin {
         #[cfg(feature = "debug")]
         app.add_plugins(WorldInspectorPlugin::new());
         #[cfg(not(feature = "debug"))]
-        app.add_plugins(EguiPlugin);
+        app.add_plugins(EguiPlugin {
+            enable_multipass_for_primary_context: true,
+        });
 
         app.init_resource::<MouseInUi>()
             .init_resource::<config::BvhTrailConfig>()
@@ -36,7 +38,7 @@ impl Plugin for UiPlugin {
             .init_resource::<builder::BuildConfigs>()
             .init_resource::<play_mode::MotionMatchingResult>()
             .add_systems(PreUpdate, reset_mouse_in_ui)
-            .add_systems(Update, right_panel.in_set(UiSystemSet));
+            .add_systems(EguiContextPass, right_panel.in_set(UiSystemSet));
     }
 }
 
@@ -74,12 +76,14 @@ fn right_panel(
     reset_player: &mut SystemState<EventWriter<ResetPlayer>>,
 ) {
     let (mut contexts, mut page) = params.get_mut(world);
-
-    let ctx = contexts.ctx_mut().clone();
+    let Some(context) = contexts.try_ctx_mut() else {
+        return;
+    };
+    let context = context.clone();
 
     egui::SidePanel::left("left_panel")
         .resizable(true)
-        .show(&ctx, |ui| {
+        .show(&context, |ui| {
             ui.add_space(10.0);
             ui.horizontal(|ui| {
                 if ui.button("Config").clicked() {
@@ -95,7 +99,7 @@ fn right_panel(
 
             if ui.button("Reset Player").clicked() {
                 let mut evw_reset_player = reset_player.get_mut(world);
-                evw_reset_player.send(ResetPlayer);
+                evw_reset_player.write(ResetPlayer);
             }
 
             egui::ScrollArea::vertical().show(ui, |ui| match *page {
@@ -108,7 +112,7 @@ fn right_panel(
             });
         });
 
-    if ctx.is_pointer_over_area() {
+    if context.is_pointer_over_area() {
         let mut mouse_in_ui = world.resource_mut::<MouseInUi>();
         mouse_in_ui.set_is_inside();
     }
