@@ -1,9 +1,8 @@
 # Bevy Motion Matching
 
-> [!Note]
-> This project's initial phase research has been completed!
-> If anyone is interested in continuing making this into a publishable product, feel free to reach out to us!
-> We might revisit this project in the future, but for now, our focus has shifted elsewhere...
+> [!Note]  
+> This project is being split up into library and example crates, to be published on [crates.io](https://crates.io).  
+> If you are interested in helping out, feel free to [reach out](#community).
 
 Motion matching enables characters to smoothly transition between animations by finding the best matching pose and trajectory from an extensive database, without the need to create state machines.
 Gameplay logic can be embedded side by side with motion matching by querying animations with the desired attributes.
@@ -40,6 +39,10 @@ cargo build
 ```bash
 cargo run --features bevy/dynamic_linking
 ```
+
+## Community
+
+- [Voxell Discord server](discord.gg/Mhnyp6VYEQ)
 
 ## Reference
 
