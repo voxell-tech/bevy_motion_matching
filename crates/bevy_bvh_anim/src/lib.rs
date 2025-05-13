@@ -18,10 +18,13 @@ pub mod joint_matrices;
 pub mod joint_traits;
 
 pub trait FrameExt {
+    #[must_use]
     fn get_pos_rot(&self, joint_data: &JointData) -> (Vec3, Quat);
 
+    #[must_use]
     fn get_pos(&self, joint_data: &JointData) -> Vec3;
 
+    #[must_use]
     fn get_rot(&self, joint_data: &JointData) -> Quat;
 }
 
