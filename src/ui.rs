@@ -1,8 +1,6 @@
 use bevy::{ecs::system::SystemState, prelude::*};
-use bevy_egui::{
-    egui::{self, Color32},
-    EguiContextPass, EguiContexts,
-};
+use bevy_egui::egui::{self, Color32};
+use bevy_egui::{EguiContexts, EguiPrimaryContextPass};
 
 #[cfg(not(feature = "debug"))]
 use bevy_egui::EguiPlugin;
@@ -24,9 +22,7 @@ impl Plugin for UiPlugin {
         #[cfg(feature = "debug")]
         app.add_plugins(WorldInspectorPlugin::new());
         #[cfg(not(feature = "debug"))]
-        app.add_plugins(EguiPlugin {
-            enable_multipass_for_primary_context: true,
-        });
+        app.add_plugins(EguiPlugin::default());
 
         app.init_resource::<MouseInUi>()
             .init_resource::<config::BvhTrailConfig>()
@@ -38,7 +34,7 @@ impl Plugin for UiPlugin {
             .init_resource::<builder::BuildConfigs>()
             .init_resource::<play_mode::MotionMatchingResult>()
             .add_systems(PreUpdate, reset_mouse_in_ui)
-            .add_systems(EguiContextPass, right_panel.in_set(UiSystemSet));
+            .add_systems(EguiPrimaryContextPass, right_panel.in_set(UiSystemSet));
     }
 }
 
@@ -76,7 +72,7 @@ fn right_panel(
     reset_player: &mut SystemState<EventWriter<ResetPlayer>>,
 ) {
     let (mut contexts, mut page) = params.get_mut(world);
-    let Some(context) = contexts.try_ctx_mut() else {
+    let Ok(context) = contexts.ctx_mut() else {
         return;
     };
     let context = context.clone();
