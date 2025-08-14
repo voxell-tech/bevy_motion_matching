@@ -9,6 +9,7 @@ license = "MIT OR Apache-2.0"
 repository = "https://github.com/nixon-voxell/bevy_motion_matching"
 
 [workspace.dependencies]
+bevy_bvh_anim = { version = "0.1.0", path = "crates/bevy_bvh_anim" }
 bevy = { version = "0.16", features = ["asset_processor"] }
 bevy_gltf = "0.16"
 bevy_egui = "0.36"
@@ -44,7 +45,7 @@ license.workspace = true
 repository.workspace = true
 
 [dependencies]
-bevy_bvh_anim = { path = "crates/bevy_bvh_anim" }
+bevy_bvh_anim = { workspace = true }
 bevy = { workspace = true }
 bevy_gltf = { workspace = true }
 bevy_egui = { workspace = true }
