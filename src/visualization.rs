@@ -157,8 +157,12 @@ fn draw_nearest_pose_armature(
             let pose = motion_asset
                 .pose_data
                 .get_chunk(traj.chunk_index)
-                .and_then(|poses| poses.get(traj.chunk_offset))
-                .unwrap();
+                .and_then(|poses| poses.get(traj.chunk_offset));
+            if pose.is_none() {
+                continue;
+            }
+
+            let pose = pose.unwrap();
             joint_matrices.apply_frame(pose);
 
             let pose_translation_offset = Vec3::new(i as f32 * POSE_OFFSET, 0.0, 0.0);
