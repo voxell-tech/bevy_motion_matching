@@ -25,8 +25,8 @@ Gameplay logic can be embedded side by side with motion matching by querying ani
   - MSRV: v1.85.0
 - Cargo
 - Linux: [Bevy dependencies](https://github.com/bevyengine/bevy/blob/main/docs/linux_dependencies.md)
-- Optional, for the Visual Studio Code `start` task: `cargo-watch`
-  - `cargo install cargo-watch` or `cargo binstall cargo-watch`
+- Optional, for the Visual Studio Code `run (watch)` task: bacon
+  - `cargo install bacon --locked` or `cargo binstall bacon`
 
 ### Building
 
