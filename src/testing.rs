@@ -1,3 +1,4 @@
+use std::fs;
 use std::{fs::File, io::Write};
 
 use bevy::{ecs::system::SystemState, prelude::*};
@@ -398,7 +399,8 @@ fn traj_matching_with_kmeans(
 }
 
 fn write_to_csv(test_data: Res<TestData>, nearest_trajectories: Res<NearestTrajectory>) {
-    let file = File::create("assets/traj_matching_result.csv").expect("Failed to create CSV file");
+    fs::create_dir_all("debug").expect("should be able to create `debug/` directory");
+    let file = File::create("debug/traj_matching_result.csv").expect("Failed to create CSV file");
     let mut writer = csv::Writer::from_writer(file);
 
     let mut kd_tree_chunk_index_score = 0;
