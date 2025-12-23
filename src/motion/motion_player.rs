@@ -32,7 +32,7 @@ impl Plugin for MotionPlayerPlugin {
         app.insert_resource(MotionPlayerConfig {
             interp_duration: 0.3333,
         })
-        .add_event::<JumpToPose>()
+        .add_message::<JumpToPose>()
         .add_systems(
             Update,
             (
@@ -59,7 +59,7 @@ impl Plugin for MotionPlayerPlugin {
 
 fn _test(
     // q_entities: Query<Entity, With<TrajectoryPosePair>>,
-    // mut jump_evw: EventWriter<JumpToPose>,
+    // mut jump_mw: MessageWriter<JumpToPose>,
     input: Res<ButtonInput<KeyCode>>,
     mut time: ResMut<Time<Virtual>>,
 ) {
@@ -73,7 +73,7 @@ fn _test(
 
     // if input.just_pressed(KeyCode::Space) {
     //     for entity in q_entities.iter() {
-    //         jump_evw.write(JumpToPose {
+    //         jump_mw.write(JumpToPose {
     //             motion_pose: MotionPose {
     //                 chunk_index: 0,
     //                 time: 3.0,
@@ -202,7 +202,7 @@ fn apply_root_transform(
 /// Handle the [`JumpToPose`] event.
 fn jump_to_pose(
     motion_data: MotionData,
-    mut jump_evr: EventReader<JumpToPose>,
+    mut jump_mr: MessageReader<JumpToPose>,
     mut q_motion_players: Query<(&mut MotionPlayer, &mut TrajectoryPosePair, &Transform2d)>,
 ) {
     let Some((pose_data, root_joint)) = motion_data
@@ -213,7 +213,7 @@ fn jump_to_pose(
         return;
     };
 
-    for jump_to_pose in jump_evr.read() {
+    for jump_to_pose in jump_mr.read() {
         let Ok((mut motion_player, mut traj_pose_pair, transform2d)) =
             q_motion_players.get_mut(jump_to_pose.entity)
         else {
@@ -364,7 +364,7 @@ pub enum MotionPlayerSet {
     Interpolate,
 }
 
-#[derive(Event, Debug, Deref, DerefMut)]
+#[derive(Debug, Deref, DerefMut, Message)]
 pub struct JumpToPose {
     #[deref]
     pub motion_pose: MotionPose,

@@ -49,16 +49,16 @@ impl Plugin for TestingPlugin {
 
 fn save_traj_matrices(
     q_trajectory: Query<(&Trajectory, &Transform)>,
-    mut match_evr: EventReader<TrajectoryMatch>,
+    mut match_mr: MessageReader<TrajectoryMatch>,
     mut testing_data: ResMut<TestingData>,
 ) {
-    for traj_match in match_evr.read() {
+    for traj_match in match_mr.read() {
         let entity = **traj_match;
         let Ok((traj, transform)) = q_trajectory.get(entity) else {
             continue;
         };
 
-        let inv_matrix = transform.compute_matrix().inverse();
+        let inv_matrix = transform.to_matrix().inverse();
         let traj = traj
             .iter()
             .map(|&(mut point)| {

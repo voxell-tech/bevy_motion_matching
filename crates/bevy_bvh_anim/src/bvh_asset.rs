@@ -32,7 +32,7 @@ impl BvhAsset {
     }
 }
 
-#[derive(Default)]
+#[derive(Default, TypePath)]
 pub struct BvhAssetLoader;
 
 impl AssetLoader for BvhAssetLoader {

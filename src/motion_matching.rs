@@ -46,9 +46,9 @@ impl Plugin for MotionMatchingPlugin {
                 match_threshold: 0.3,
                 pred_match_threshold: 0.15,
             })
-            .add_event::<TrajectoryMatch>()
-            .add_event::<PredictionMatch>()
-            .add_event::<NearestTrajectories>()
+            .add_message::<TrajectoryMatch>()
+            .add_message::<PredictionMatch>()
+            .add_message::<NearestTrajectories>()
             .add_systems(PreStartup, load_motion_data)
             .add_systems(
                 Update,
@@ -75,8 +75,8 @@ fn flow(
     q_players: Query<(&MotionPlayer, &TrajectoryPosePair, Entity)>,
     trajectory_config: Res<TrajectoryConfig>,
     motion_player_config: Res<MotionPlayerConfig>,
-    mut traj_match_evw: EventWriter<TrajectoryMatch>,
-    mut pred_match_evw: EventWriter<PredictionMatch>,
+    mut traj_match_mw: MessageWriter<TrajectoryMatch>,
+    mut pred_match_mw: MessageWriter<PredictionMatch>,
 ) {
     let predict_time = trajectory_config.predict_time();
     let interp_duration = motion_player_config.interp_duration();
@@ -91,7 +91,7 @@ fn flow(
         let index = motion_player.target_pair_index();
         let Some(traj_pose) = &traj_pose_pair[index] else {
             // Find a new animation to play.
-            traj_match_evw.write(TrajectoryMatch(entity));
+            traj_match_mw.write(TrajectoryMatch(entity));
             continue;
         };
 
@@ -101,7 +101,7 @@ fn flow(
                 continue;
             }
             false => {
-                pred_match_evw.write(PredictionMatch {
+                pred_match_mw.write(PredictionMatch {
                     motion_pose: *traj_pose.motion_pose(),
                     entity,
                 });
@@ -118,8 +118,8 @@ fn prediction_match(
     q_trajectory: Query<(&Trajectory, &Transform)>,
     match_config: Res<MatchConfig>,
     trajectory_config: Res<TrajectoryConfig>,
-    mut pred_match_evr: EventReader<PredictionMatch>,
-    mut traj_match_evw: EventWriter<TrajectoryMatch>,
+    mut pred_match_mr: MessageReader<PredictionMatch>,
+    mut traj_match_mw: MessageWriter<TrajectoryMatch>,
 ) {
     let Some(motion_asset) = motion_data.get() else {
         return;
@@ -130,12 +130,12 @@ fn prediction_match(
 
     let num_points = trajectory_config.num_predict_points();
 
-    for pred_match in pred_match_evr.read() {
+    for pred_match in pred_match_mr.read() {
         let Ok((trajectory, transform)) = q_trajectory.get(pred_match.entity) else {
             continue;
         };
 
-        let inv_matrix = transform.compute_matrix().inverse();
+        let inv_matrix = transform.to_matrix().inverse();
         let traj = trajectory
             .iter()
             // Only match the prediction trajectory.
@@ -154,7 +154,7 @@ fn prediction_match(
             trajectory_data.get_chunk(pred_match.chunk_index),
             pose_data.is_chunk_loopable(pred_match.chunk_index),
         ) else {
-            traj_match_evw.write(TrajectoryMatch(pred_match.entity));
+            traj_match_mw.write(TrajectoryMatch(pred_match.entity));
             continue;
         };
 
@@ -163,7 +163,7 @@ fn prediction_match(
             match loopable {
                 true => chunk_offset = 0,
                 false => {
-                    traj_match_evw.write(TrajectoryMatch(pred_match.entity));
+                    traj_match_mw.write(TrajectoryMatch(pred_match.entity));
                     continue;
                 }
             }
@@ -186,7 +186,7 @@ fn prediction_match(
             .collect::<Vec<_>>();
 
         if traj.distance(&data_traj) > match_config.pred_match_threshold {
-            traj_match_evw.write(TrajectoryMatch(pred_match.entity));
+            traj_match_mw.write(TrajectoryMatch(pred_match.entity));
         }
     }
 }
@@ -200,8 +200,8 @@ fn trajectory_match(
     trajectory_config: Res<TrajectoryConfig>,
     match_config: Res<MatchConfig>,
     mut motion_matching_result: ResMut<MotionMatchingResult>,
-    mut match_evr: EventReader<TrajectoryMatch>,
-    mut nearest_trajectories_evw: EventWriter<NearestTrajectories>,
+    mut match_mr: MessageReader<TrajectoryMatch>,
+    mut nearest_trajectories_mw: MessageWriter<NearestTrajectories>,
 ) {
     // println!("Brute Force KNN Method");
     PEAK_ALLOC.reset_peak_usage();
@@ -212,13 +212,13 @@ fn trajectory_match(
     let num_segments = trajectory_config.num_segments();
     let num_points = trajectory_config.num_points();
 
-    for traj_match in match_evr.read() {
+    for traj_match in match_mr.read() {
         let entity = **traj_match;
         let Ok((traj, transform)) = q_trajectory.get(entity) else {
             continue;
         };
 
-        let inv_matrix = transform.compute_matrix().inverse();
+        let inv_matrix = transform.to_matrix().inverse();
         let traj = traj
             .iter()
             .map(|&(mut point)| {
@@ -301,7 +301,7 @@ fn trajectory_match(
                 / runs as f64;
         motion_matching_result.matching_result.runs = runs;
 
-        nearest_trajectories_evw.write(NearestTrajectories {
+        nearest_trajectories_mw.write(NearestTrajectories {
             trajectories: nearest_trajs,
             entity,
         });
@@ -312,15 +312,15 @@ fn pose_match(
     motion_data: MotionData,
     q_transforms: Query<&Transform>,
     q_joint_maps: Query<&JointMap>,
-    mut nearest_trajectories_evr: EventReader<NearestTrajectories>,
+    mut nearest_trajectories_mr: MessageReader<NearestTrajectories>,
     mut motion_matching_result: ResMut<MotionMatchingResult>,
-    mut jump_evw: EventWriter<JumpToPose>,
+    mut jump_mw: MessageWriter<JumpToPose>,
 ) {
     let Some(motion_asset) = motion_data.get() else {
         return;
     };
 
-    for trajs in nearest_trajectories_evr.read() {
+    for trajs in nearest_trajectories_mr.read() {
         motion_matching_result.trajectories_poses.clear();
 
         // Ignore if there is no trajectories at all.
@@ -378,7 +378,7 @@ fn pose_match(
         motion_matching_result.selected_trajectory = best_traj_index;
 
         let best_traj = &trajs[best_traj_index];
-        jump_evw.write(JumpToPose {
+        jump_mw.write(JumpToPose {
             motion_pose: MotionPose {
                 chunk_index: best_traj.chunk_index,
                 time: motion_asset
@@ -390,11 +390,11 @@ fn pose_match(
     }
 }
 
-#[derive(Event, Debug, Deref, DerefMut)]
+#[derive(Debug, Deref, DerefMut, Message)]
 pub struct TrajectoryMatch(pub Entity);
 
 // TODO: Prediction match must loop back for loopable animations.
-#[derive(Event, Debug, Deref, DerefMut)]
+#[derive(Debug, Deref, DerefMut, Message)]
 pub struct PredictionMatch {
     #[deref]
     pub motion_pose: MotionPose,
@@ -420,7 +420,7 @@ pub struct MatchTrajectory {
 }
 
 /// A vec of [`MatchTrajectory`] that has the least [`MatchTrajectory::distance`].
-#[derive(Event, Debug, Deref, DerefMut, Clone)]
+#[derive(Debug, Clone, Deref, DerefMut, Message)]
 pub struct NearestTrajectories {
     #[deref]
     pub trajectories: Vec<MatchTrajectory>,

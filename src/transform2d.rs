@@ -6,7 +6,7 @@ impl Plugin for Transform2dPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(
             PostUpdate,
-            apply_transform2d.before(TransformSystem::TransformPropagate),
+            apply_transform2d.before(TransformSystems::Propagate),
         );
 
         app.register_type::<Transform2d>();

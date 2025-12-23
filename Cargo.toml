@@ -10,14 +10,45 @@ repository = "https://github.com/nixon-voxell/bevy_motion_matching"
 
 [workspace.dependencies]
 bevy_bvh_anim = { version = "0.1.0", path = "crates/bevy_bvh_anim" }
-bevy = { version = "0.16", features = ["asset_processor"] }
-bevy_gltf = "0.16"
-bevy_egui = "0.36"
-bevy-inspector-egui = "0.33"
-egui_extras = "0.32"
-egui_plot = "0.33"
-leafwing-input-manager = "0.17"
-bevy_platform = "0.16"
+bevy = { version = "0.17", default-features = false, features = [
+	"std",
+	"bevy_gilrs",
+	"bevy_winit",
+	"default_font",
+	"multi_threaded",
+	"wayland",
+	"async_executor",
+	"bevy_asset",
+	"bevy_input_focus",
+	"bevy_log",
+	"bevy_state",
+	"bevy_window",
+	"reflect_auto_register",
+	"animation",
+	"bevy_camera",
+	"bevy_color",
+	"bevy_gizmos",
+	"bevy_image",
+	"bevy_mesh",
+	"bevy_shader",
+	"bevy_text",
+	"hdr",
+	"png",
+	"bevy_render",
+	"bevy_core_pipeline",
+	"bevy_anti_alias",
+	"bevy_gltf",
+	"bevy_pbr",
+	"bevy_post_process",
+	"bevy_light",
+	"bevy_scene",
+	"asset_processor"
+] }
+bevy_egui = "0.38"
+bevy-inspector-egui = "0.35"
+egui_extras = "0.33"
+egui_plot = "0.34"
+leafwing-input-manager = "0.19"
 serde_json = "1.0"
 serde = "1.0"
 bvh_anim = "0.4"
@@ -47,9 +78,7 @@ repository.workspace = true
 [dependencies]
 bevy_bvh_anim = { workspace = true }
 bevy = { workspace = true }
-bevy_gltf = { workspace = true }
 bevy_egui = { workspace = true }
-bevy_platform = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 thiserror = { workspace = true }

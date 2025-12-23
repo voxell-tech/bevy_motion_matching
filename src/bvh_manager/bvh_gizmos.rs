@@ -17,7 +17,7 @@ impl Plugin for BvhGizmosPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(
             PostUpdate,
-            (armature_gizmos, bvh_trail_gizmos).after(TransformSystem::TransformPropagate),
+            (armature_gizmos, bvh_trail_gizmos).after(TransformSystems::Propagate),
         );
     }
 }
@@ -65,10 +65,7 @@ fn armature_gizmos(
 
         index += 1;
         if index > SKIP_HIERARCHY {
-            axes.draw(
-                parent_transform.compute_matrix(),
-                1.0 / BVH_SCALE_RATIO * 0.04,
-            );
+            axes.draw(parent_transform.to_matrix(), 1.0 / BVH_SCALE_RATIO * 0.04);
         }
 
         if let Ok(children) = q_children.get(parent) {

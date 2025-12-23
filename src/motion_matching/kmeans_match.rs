@@ -101,21 +101,21 @@ fn populate_kmeans(
 
 fn trajectory_match_with_kmeans(
     q_trajectory: Query<(&Trajectory, &Transform)>,
-    mut match_evr: EventReader<TrajectoryMatch>,
+    mut match_mr: MessageReader<TrajectoryMatch>,
     match_config: Res<MatchConfig>,
-    mut nearest_trajectories_evw: EventWriter<NearestTrajectories>,
+    mut nearest_trajectories_mw: MessageWriter<NearestTrajectories>,
     kmeans: Res<KMeansResource>,
     mut motion_matching_result: ResMut<MotionMatchingResult>,
 ) {
     // println!("KMeans Method");
     PEAK_ALLOC.reset_peak_usage();
-    for traj_match in match_evr.read() {
+    for traj_match in match_mr.read() {
         let entity = **traj_match;
         let Ok((traj, transform)) = q_trajectory.get(entity) else {
             continue;
         };
 
-        let inv_matrix = transform.compute_matrix().inverse();
+        let inv_matrix = transform.to_matrix().inverse();
         let traj = traj
             .iter()
             .map(|&(mut point)| {
@@ -198,7 +198,7 @@ fn trajectory_match_with_kmeans(
         motion_matching_result.matching_result.runs = runs;
         nearest_trajs.sort_by(|t0, t1| t0.distance.total_cmp(&t1.distance));
 
-        nearest_trajectories_evw.write(NearestTrajectories {
+        nearest_trajectories_mw.write(NearestTrajectories {
             trajectories: nearest_trajs,
             entity,
         });
