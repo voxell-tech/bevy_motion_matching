@@ -129,7 +129,7 @@ fn spawn_camera(mut commands: Commands) {
     camera.state.yaw = 30.0f32.to_radians();
     commands.spawn((
         camera,
-        Hdr::default(),
+        Hdr,
         Bloom::default(),
         DebandDither::Enabled,
         Tonemapping::AcesFitted,
