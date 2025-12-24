@@ -17,6 +17,7 @@ bevy = { version = "0.17", default-features = false, features = [
 	"default_font",
 	"multi_threaded",
 	"wayland",
+	"sysinfo_plugin",
 	"async_executor",
 	"bevy_asset",
 	"bevy_input_focus",
