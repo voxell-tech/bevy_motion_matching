@@ -227,7 +227,7 @@ pub fn draw_trajectory_plot(
     mut trajectories_plot: ResMut<TrajectoryPlot>,
 ) {
     for (trajectory, transform) in q_trajectories.iter() {
-        let inv_matrix = transform.compute_matrix().inverse();
+        let inv_matrix = transform.to_matrix().inverse();
 
         **trajectories_plot = trajectory
             .iter()

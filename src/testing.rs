@@ -1,3 +1,4 @@
+use std::fs;
 use std::{fs::File, io::Write};
 
 use bevy::{ecs::system::SystemState, prelude::*};
@@ -49,16 +50,16 @@ impl Plugin for TestingPlugin {
 
 fn save_traj_matrices(
     q_trajectory: Query<(&Trajectory, &Transform)>,
-    mut match_evr: EventReader<TrajectoryMatch>,
+    mut match_mr: MessageReader<TrajectoryMatch>,
     mut testing_data: ResMut<TestingData>,
 ) {
-    for traj_match in match_evr.read() {
+    for traj_match in match_mr.read() {
         let entity = **traj_match;
         let Ok((traj, transform)) = q_trajectory.get(entity) else {
             continue;
         };
 
-        let inv_matrix = transform.compute_matrix().inverse();
+        let inv_matrix = transform.to_matrix().inverse();
         let traj = traj
             .iter()
             .map(|&(mut point)| {
@@ -398,7 +399,8 @@ fn traj_matching_with_kmeans(
 }
 
 fn write_to_csv(test_data: Res<TestData>, nearest_trajectories: Res<NearestTrajectory>) {
-    let file = File::create("assets/traj_matching_result.csv").expect("Failed to create CSV file");
+    fs::create_dir_all("debug").expect("should be able to create `debug/` directory");
+    let file = File::create("debug/traj_matching_result.csv").expect("Failed to create CSV file");
     let mut writer = csv::Writer::from_writer(file);
 
     let mut kd_tree_chunk_index_score = 0;

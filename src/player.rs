@@ -17,7 +17,7 @@ pub struct PlayerPlugin;
 
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
-        app.add_event::<ResetPlayer>()
+        app.add_message::<ResetPlayer>()
             .insert_resource(MovementConfig {
                 walk_speed: 2.0,
                 run_speed: 2.5,
@@ -144,7 +144,7 @@ fn reset_player(
     mut commands: Commands,
     bvh_library: Res<BvhLibrary>,
     bvh_assets: Res<Assets<BvhAsset>>,
-    mut evr_reset_player: EventReader<ResetPlayer>,
+    mut reset_player_mr: MessageReader<ResetPlayer>,
     mut q_transforms: Query<&mut Transform>,
     q_scene: Query<(&JointMap, Entity), With<MainScene>>,
 ) {
@@ -152,7 +152,7 @@ fn reset_player(
         return;
     };
 
-    for _ in evr_reset_player.read() {
+    for _ in reset_player_mr.read() {
         let frame = FrameData(
             map.frames()
                 .next()
@@ -217,5 +217,5 @@ pub struct MovementConfig {
     pub lerp_factor: f32,
 }
 
-#[derive(Event, Default, Clone, Copy)]
+#[derive(Default, Clone, Copy, Message)]
 pub struct ResetPlayer;

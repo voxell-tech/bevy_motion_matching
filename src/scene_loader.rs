@@ -1,6 +1,6 @@
 use bevy::image::{ImageAddressMode, ImageLoaderSettings, ImageSampler, ImageSamplerDescriptor};
+use bevy::mesh::VertexAttributeValues;
 use bevy::prelude::*;
-use bevy::render::mesh::VertexAttributeValues;
 
 use crate::draw_axes::ColorPalette;
 use crate::motion::motion_player::MotionPlayerBundle;

@@ -69,7 +69,7 @@ enum RightPanelPage {
 fn right_panel(
     world: &mut World,
     params: &mut SystemState<(EguiContexts, Local<RightPanelPage>)>,
-    reset_player: &mut SystemState<EventWriter<ResetPlayer>>,
+    reset_player: &mut SystemState<MessageWriter<ResetPlayer>>,
 ) {
     let (mut contexts, mut page) = params.get_mut(world);
     let Ok(context) = contexts.ctx_mut() else {
@@ -94,8 +94,8 @@ fn right_panel(
             });
 
             if ui.button("Reset Player").clicked() {
-                let mut evw_reset_player = reset_player.get_mut(world);
-                evw_reset_player.write(ResetPlayer);
+                let mut reset_player_mw = reset_player.get_mut(world);
+                reset_player_mw.write(ResetPlayer);
             }
 
             egui::ScrollArea::vertical().show(ui, |ui| match *page {

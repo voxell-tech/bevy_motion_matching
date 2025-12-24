@@ -1,8 +1,7 @@
 use std::{fs, path::PathBuf, str::FromStr};
 
-use bevy::prelude::*;
+use bevy::{platform::collections::HashSet, prelude::*};
 use bevy_bvh_anim::prelude::*;
-use bevy_platform::collections::HashSet;
 
 pub const BVH_FOLDER: &str = "bvh";
 pub const BVH_MAP_FOLDER: &str = "bvh_map";
@@ -36,7 +35,9 @@ pub struct BvhLibraryManager<'w> {
 
 impl BvhLibraryManager<'_> {
     /// Loads Bvh data from disk.
+    ///
     /// # Warning
+    ///
     /// A warning will be issued if specified asset has been loaded before.
     pub fn load(&mut self, asset_server: &AssetServer, file_path: PathBuf) {
         let handle = asset_server.load(file_path.clone());

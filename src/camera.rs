@@ -1,12 +1,11 @@
 use std::f32::consts::{FRAC_PI_2, PI, TAU};
 
 use bevy::{
-    core_pipeline::{
-        bloom::Bloom,
-        tonemapping::{DebandDither, Tonemapping},
-    },
+    core_pipeline::tonemapping::{DebandDither, Tonemapping},
     input::mouse::{MouseMotion, MouseScrollUnit, MouseWheel},
+    post_process::bloom::Bloom,
     prelude::*,
+    render::view::Hdr,
 };
 
 use crate::{
@@ -130,10 +129,7 @@ fn spawn_camera(mut commands: Commands) {
     camera.state.yaw = 30.0f32.to_radians();
     commands.spawn((
         camera,
-        Camera {
-            hdr: true,
-            ..default()
-        },
+        Hdr,
         Bloom::default(),
         DebandDither::Enabled,
         Tonemapping::AcesFitted,
@@ -144,8 +140,8 @@ fn pan_orbit_camera(
     mut q_camera: Query<(&PanOrbitSettings, &mut PanOrbitState, &mut Transform)>,
     q_global_transforms: Query<&GlobalTransform>,
     q_main_scene: Query<Entity, With<MainScene>>,
-    mut evr_motion: EventReader<MouseMotion>,
-    mut evr_scroll: EventReader<MouseWheel>,
+    mut motion_mr: MessageReader<MouseMotion>,
+    mut scroll_mr: MessageReader<MouseWheel>,
     kbd: Res<ButtonInput<KeyCode>>,
     mouse: Res<ButtonInput<MouseButton>>,
     mut camera_focus: ResMut<CameraFocus>,
@@ -153,7 +149,7 @@ fn pan_orbit_camera(
 ) {
     // First, accumulate the total amount of
     // mouse motion and scroll, from all pending events:
-    let mut total_motion: Vec2 = evr_motion.read().map(|ev| ev.delta).sum();
+    let mut total_motion: Vec2 = motion_mr.read().map(|ev| ev.delta).sum();
 
     // Reverse Y (Bevy's Worldspace coordinate system is Y-Up,
     // but events are in window/ui coordinates, which are Y-Down)
@@ -162,7 +158,7 @@ fn pan_orbit_camera(
     let mut total_scroll_lines = Vec2::ZERO;
     let mut total_scroll_pixels = Vec2::ZERO;
     if mouse_in_ui.get() == false {
-        for ev in evr_scroll.read() {
+        for ev in scroll_mr.read() {
             match ev.unit {
                 MouseScrollUnit::Line => {
                     total_scroll_lines.x += ev.x;

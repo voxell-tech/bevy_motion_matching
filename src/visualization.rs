@@ -17,11 +17,11 @@ impl Plugin for VisualizationPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(
             PostUpdate,
-            draw_nearest_traj_arrow.after(TransformSystem::TransformPropagate),
+            draw_nearest_traj_arrow.after(TransformSystems::Propagate),
         )
         .add_systems(
             PostUpdate,
-            draw_nearest_pose_armature.after(TransformSystem::TransformPropagate),
+            draw_nearest_pose_armature.after(TransformSystems::Propagate),
         );
     }
 }
@@ -30,8 +30,8 @@ fn draw_nearest_traj_arrow(
     trajectory_config: Res<TrajectoryConfig>,
     q_player_transform: Query<&Transform, With<PlayerMarker>>,
     motion_matching_result: Res<MotionMatchingResult>,
-    mut nearest_traj: Local<Vec<(NearestTrajectories, Mat4, usize)>>,
-    mut nearest_trajectories_evr: EventReader<NearestTrajectories>,
+    mut nearest_trajectories: Local<Vec<(NearestTrajectories, Mat4, usize)>>,
+    mut nearest_trajectories_mr: MessageReader<NearestTrajectories>,
     mut gizmos: Gizmos,
     palette: Res<ColorPalette>,
     draw: Res<DrawNearestTrajectory>,
@@ -41,8 +41,8 @@ fn draw_nearest_traj_arrow(
     }
     const MAX_TRAJ: usize = 15;
 
-    if nearest_traj.len() > MAX_TRAJ {
-        nearest_traj.remove(0);
+    if nearest_trajectories.len() > MAX_TRAJ {
+        nearest_trajectories.remove(0);
     }
 
     let Some(motion_asset) = motion_data.get() else {
@@ -53,23 +53,23 @@ fn draw_nearest_traj_arrow(
         return;
     };
 
-    let curr_player_matrix = player_transform.compute_matrix();
+    let curr_player_matrix = player_transform.to_matrix();
 
     let num_points = trajectory_config.num_points();
 
-    for trajs in nearest_trajectories_evr.read() {
+    for trajs in nearest_trajectories_mr.read() {
         if trajs.is_empty() {
             continue;
         }
 
-        nearest_traj.push((
+        nearest_trajectories.push((
             trajs.clone(),
             curr_player_matrix,
             motion_matching_result.selected_trajectory,
         ));
     }
 
-    for (trajs, snapped_player_matrix, selected_index) in nearest_traj.iter() {
+    for (trajs, snapped_player_matrix, selected_index) in nearest_trajectories.iter() {
         for (i, traj) in trajs.iter().enumerate() {
             let color = match i == *selected_index {
                 true => palette.green,
@@ -110,7 +110,7 @@ fn draw_nearest_traj_arrow(
 fn draw_nearest_pose_armature(
     motion_data: MotionData,
     q_player_transform: Query<&Transform, With<PlayerMarker>>,
-    mut nearest_trajectories_evr: EventReader<NearestTrajectories>,
+    mut nearest_trajectories_mr: MessageReader<NearestTrajectories>,
     motion_matching_result: Res<MotionMatchingResult>,
     mut gizmos: Gizmos,
     palette: Res<ColorPalette>,
@@ -134,9 +134,9 @@ fn draw_nearest_pose_armature(
         return;
     };
 
-    let curr_player_matrix = player_transform.compute_matrix();
+    let curr_player_matrix = player_transform.to_matrix();
 
-    for trajs in nearest_trajectories_evr.read() {
+    for trajs in nearest_trajectories_mr.read() {
         if trajs.is_empty() {
             continue;
         }
@@ -157,8 +157,12 @@ fn draw_nearest_pose_armature(
             let pose = motion_asset
                 .pose_data
                 .get_chunk(traj.chunk_index)
-                .and_then(|poses| poses.get(traj.chunk_offset))
-                .unwrap();
+                .and_then(|poses| poses.get(traj.chunk_offset));
+            if pose.is_none() {
+                continue;
+            }
+
+            let pose = pose.unwrap();
             joint_matrices.apply_frame(pose);
 
             let pose_translation_offset = Vec3::new(i as f32 * POSE_OFFSET, 0.0, 0.0);
