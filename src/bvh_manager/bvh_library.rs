@@ -35,7 +35,9 @@ pub struct BvhLibraryManager<'w> {
 
 impl BvhLibraryManager<'_> {
     /// Loads Bvh data from disk.
+    ///
     /// # Warning
+    ///
     /// A warning will be issued if specified asset has been loaded before.
     pub fn load(&mut self, asset_server: &AssetServer, file_path: PathBuf) {
         let handle = asset_server.load(file_path.clone());

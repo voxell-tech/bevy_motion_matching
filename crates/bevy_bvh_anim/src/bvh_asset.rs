@@ -10,7 +10,7 @@ pub struct BvhAssetPlugin;
 impl Plugin for BvhAssetPlugin {
     fn build(&self, app: &mut App) {
         app.init_asset::<BvhAsset>()
-            .init_asset_loader::<BvhAssetLoader>();
+            .register_asset_loader(BvhAssetLoader);
     }
 }
 
