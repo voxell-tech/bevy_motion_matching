@@ -3,17 +3,17 @@ use std::{fs::File, io::Write};
 
 use bevy::{ecs::system::SystemState, prelude::*};
 use bevy_egui::egui;
-use clustering::{kmeans, Centroid};
-use kdtree::{distance::squared_euclidean, KdTree};
+use clustering::{Centroid, kmeans};
+use kdtree::{KdTree, distance::squared_euclidean};
 use serde::{Deserialize, Serialize};
 
-use crate::motion::chunk::ChunkIterator;
+use crate::BVH_SCALE_RATIO;
 use crate::motion::MotionData;
+use crate::motion::chunk::ChunkIterator;
 use crate::motion_matching::kdtree_match::offset_distance;
 use crate::motion_matching::kmeans_match::KMeansResource;
 use crate::motion_matching::{MatchConfig, MatchTrajectory, TrajectoryMatch};
 use crate::trajectory::{Trajectory, TrajectoryConfig};
-use crate::BVH_SCALE_RATIO;
 
 pub struct TestingPlugin;
 
@@ -94,7 +94,7 @@ pub fn generate_testing_data(ui: &mut egui::Ui, world: &mut World) {
             .write(true)
             .create(true)
             .truncate(true)
-            .open("assets/testing_dataset.json")
+            .open("crates/bevy_motion_matching/assets/testing_dataset.json")
             .unwrap();
 
         asset_file.write_all(convert_to_json.as_bytes()).unwrap();
@@ -103,7 +103,7 @@ pub fn generate_testing_data(ui: &mut egui::Ui, world: &mut World) {
 }
 
 fn load_testing_data(mut commands: Commands) {
-    let file_path = "./assets/testing_dataset.json";
+    let file_path = "crates/bevy_motion_matching/assets/testing_dataset.json";
 
     let file = File::open(file_path).expect("Failed to open the file");
 

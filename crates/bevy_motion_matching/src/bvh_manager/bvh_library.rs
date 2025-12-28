@@ -92,7 +92,7 @@ fn load_bvh_library(mut bvh_library_manager: BvhLibraryManager, asset_server: Re
         }
     }
 
-    let asset_path = PathBuf::from_str("./assets").unwrap();
+    let asset_path = PathBuf::from_str("crates/bevy_motion_matching/assets").unwrap();
     // Relative path from the executable
     let mut path = asset_path.clone();
     path.push(BVH_FOLDER);
@@ -123,6 +123,8 @@ fn load_bvh_library(mut bvh_library_manager: BvhLibraryManager, asset_server: Re
     }
 
     if entries.next().is_some() {
-        warn!("More than 1 entries detected in `{BVH_MAP_FOLDER}` folder, only the first one is loaded.");
+        warn!(
+            "More than 1 entries detected in `{BVH_MAP_FOLDER}` folder, only the first one is loaded."
+        );
     }
 }
