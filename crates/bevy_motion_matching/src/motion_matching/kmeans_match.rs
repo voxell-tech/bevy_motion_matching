@@ -3,14 +3,13 @@ use std::time::Instant;
 use bevy::prelude::*;
 
 use crate::{
-    motion::{chunk::ChunkIterator, MotionData},
-    motion_matching::MatchTrajectory,
+    BVH_SCALE_RATIO, Method,
+    motion::{MotionData, chunk::ChunkIterator},
+    motion_matching::{MatchTrajectory, MotionMatchingResult},
     trajectory::{Trajectory, TrajectoryConfig},
-    ui::play_mode::MotionMatchingResult,
-    Method, BVH_SCALE_RATIO,
 };
 
-use super::{MatchConfig, MotionMatchingSet, NearestTrajectories, TrajectoryMatch, PEAK_ALLOC};
+use super::{MatchConfig, MotionMatchingSet, NearestTrajectories, PEAK_ALLOC, TrajectoryMatch};
 
 use clustering::*;
 

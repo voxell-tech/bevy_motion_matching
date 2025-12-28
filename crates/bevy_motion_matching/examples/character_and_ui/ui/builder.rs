@@ -6,10 +6,10 @@ use bevy::prelude::*;
 use bevy_bvh_anim::prelude::*;
 use bevy_egui::egui;
 
-use crate::bvh_manager::bvh_library::BvhLibrary;
-use crate::motion::motion_asset::MotionAsset;
-use crate::motion::trajectory_data::TrajectoryDataConfig;
 use crate::trajectory::TrajectoryConfig;
+use bevy_motion_matching::bvh_manager::bvh_library::BvhLibrary;
+use bevy_motion_matching::motion::motion_asset::MotionAsset;
+use bevy_motion_matching::motion::trajectory_data::TrajectoryDataConfig;
 
 use super::scrollbox;
 

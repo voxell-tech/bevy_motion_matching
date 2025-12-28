@@ -15,8 +15,7 @@ use crate::motion::motion_player::{
 };
 use crate::motion::{MotionData, MotionHandle};
 use crate::trajectory::{Trajectory, TrajectoryConfig, TrajectoryDistance, TrajectoryPoint};
-use crate::ui::play_mode::MotionMatchingResult;
-use crate::{GameMode, MainSet, Method, BVH_SCALE_RATIO};
+use crate::{BVH_SCALE_RATIO, GameMode, MainSet, Method};
 
 use peak_alloc::PeakAlloc;
 #[global_allocator]
@@ -62,6 +61,22 @@ impl Plugin for MotionMatchingPlugin {
                 ),
             );
     }
+}
+
+#[derive(Default, Resource)]
+pub struct MotionMatchingResult {
+    /// Match trajectories and pose distances.
+    pub trajectories_poses: Vec<(MatchTrajectory, f32)>,
+    pub selected_trajectory: usize,
+    pub matching_result: MatchingResult,
+    // pub pose_matching_time: String,
+}
+
+#[derive(Default, Component, Copy, Clone)]
+pub struct MatchingResult {
+    pub avg_time: f64,
+    pub avg_memory: f64,
+    pub runs: usize,
 }
 
 pub fn load_motion_data(mut commands: Commands, asset_server: Res<AssetServer>) {

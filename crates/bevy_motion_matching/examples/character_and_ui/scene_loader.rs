@@ -2,10 +2,10 @@ use bevy::image::{ImageAddressMode, ImageLoaderSettings, ImageSampler, ImageSamp
 use bevy::mesh::VertexAttributeValues;
 use bevy::prelude::*;
 
-use crate::draw_axes::ColorPalette;
-use crate::motion::motion_player::MotionPlayerBundle;
 use crate::player::PlayerBundle;
 use crate::trajectory::TrajectoryBundle;
+use bevy_motion_matching::draw_axes::ColorPalette;
+use bevy_motion_matching::motion::motion_player::MotionPlayerBundle;
 
 /// Load glb file and setup the scene.
 pub struct SceneLoaderPlugin;

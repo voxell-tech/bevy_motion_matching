@@ -2,15 +2,16 @@ use bevy::ecs::system::SystemState;
 use bevy::prelude::*;
 use bevy_egui::egui;
 use bevy_egui::egui::Color32;
+use bevy_motion_matching::motion_matching::MatchingResult;
+use bevy_motion_matching::motion_matching::MotionMatchingResult;
 use egui_plot::{Arrows, Legend, Line, Plot, PlotPoints};
 
-use crate::motion::chunk::ChunkIterator;
-use crate::motion::MotionData;
-use crate::motion_matching::MatchTrajectory;
-use crate::testing::generate_testing_data;
 use crate::trajectory::TrajectoryConfig;
 use crate::trajectory::TrajectoryPlot;
-use crate::{GameMode, Method, BVH_SCALE_RATIO};
+use bevy_motion_matching::motion::MotionData;
+use bevy_motion_matching::motion::chunk::ChunkIterator;
+use bevy_motion_matching::testing::generate_testing_data;
+use bevy_motion_matching::{BVH_SCALE_RATIO, GameMode, Method};
 
 use super::groupbox;
 use egui_extras::{Column, TableBuilder};
@@ -330,19 +331,3 @@ impl Default for DrawNearestTrajectory {
 
 #[derive(Resource, Deref, DerefMut)]
 pub struct RunPresetDirection(pub bool);
-
-#[derive(Default, Resource)]
-pub struct MotionMatchingResult {
-    /// Match trajectories and pose distances.
-    pub trajectories_poses: Vec<(MatchTrajectory, f32)>,
-    pub selected_trajectory: usize,
-    pub matching_result: MatchingResult,
-    // pub pose_matching_time: String,
-}
-
-#[derive(Default, Component, Copy, Clone)]
-pub struct MatchingResult {
-    pub avg_time: f64,
-    pub avg_memory: f64,
-    pub runs: usize,
-}

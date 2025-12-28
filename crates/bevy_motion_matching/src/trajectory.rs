@@ -3,10 +3,10 @@ use leafwing_input_manager::prelude::*;
 
 use crate::action::PlayerAction;
 use crate::draw_axes::{ColorPalette, DrawAxes};
-use crate::player::MovementConfig;
+// use crate::player::MovementConfig;
 use crate::record::{Records, RecordsBundle};
 use crate::transform2d::Transform2d;
-use crate::ui::config::DrawTrajectory;
+// use crate::ui::config::DrawTrajectory;
 use crate::MainSet;
 
 pub struct TrajectoryPlugin;
@@ -42,7 +42,7 @@ fn predict_trajectory(
     mut q_trajectories: Query<(&mut Trajectory, &Transform2d, &Velocity, &MovementDirection)>,
     action: Res<ActionState<PlayerAction>>,
     trajectory_config: Res<TrajectoryConfig>,
-    movement_config: Res<MovementConfig>,
+    // movement_config: Res<MovementConfig>,
     time: Res<Time>,
     mut speed: Local<f32>,
 ) {
@@ -52,14 +52,11 @@ fn predict_trajectory(
     };
 
     let target_speed = match action.pressed(&PlayerAction::Run) {
-        true => movement_config.run_speed,
-        false => movement_config.walk_speed,
+        true => 2.5,
+        false => 2.0,
     };
 
-    *speed = speed.lerp(
-        target_speed,
-        time.delta_secs() * movement_config.lerp_factor,
-    );
+    *speed = speed.lerp(target_speed, time.delta_secs() * 10.0);
 
     for (mut trajectory, transform2d, velocity, direction) in q_trajectories.iter_mut() {
         // Predict trajectory.
@@ -178,28 +175,28 @@ fn resize_trajectory(
 fn draw_trajectory_axes(
     q_trajectories: Query<&Trajectory>,
     mut axes: ResMut<DrawAxes>,
-    movement_config: Res<MovementConfig>,
+    // movement_config: Res<MovementConfig>,
     palette: Res<ColorPalette>,
-    draw_trajectory: Res<DrawTrajectory>,
+    // draw_trajectory: Res<DrawTrajectory>,
 ) {
-    if !**draw_trajectory {
-        return;
-    }
-    for trajectory in q_trajectories.iter() {
-        for point in trajectory.iter() {
-            let angle = f32::atan2(point.velocity.x, point.velocity.y);
-            let translation = Vec3::new(point.translation.x, 0.0, point.translation.y);
+    // if !**draw_trajectory {
+    //     return;
+    // }
+    // for trajectory in q_trajectories.iter() {
+    //     for point in trajectory.iter() {
+    //         let angle = f32::atan2(point.velocity.x, point.velocity.y);
+    //         let translation = Vec3::new(point.translation.x, 0.0, point.translation.y);
 
-            let velocity_magnitude = point.velocity.length();
-            axes.draw_forward(
-                Mat4::from_rotation_translation(Quat::from_rotation_y(angle), translation),
-                velocity_magnitude * 0.1,
-                palette
-                    .blue
-                    .mix(&palette.red, velocity_magnitude / movement_config.run_speed),
-            );
-        }
-    }
+    //         let velocity_magnitude = point.velocity.length();
+    //         axes.draw_forward(
+    //             Mat4::from_rotation_translation(Quat::from_rotation_y(angle), translation),
+    //             velocity_magnitude * 0.1,
+    //             palette
+    //                 .blue
+    //                 .mix(&palette.red, velocity_magnitude / movement_config.run_speed),
+    //         );
+    //     }
+    // }
 }
 
 fn update_velocities(

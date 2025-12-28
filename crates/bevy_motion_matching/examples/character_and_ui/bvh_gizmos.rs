@@ -1,15 +1,14 @@
 use bevy::prelude::*;
 use bevy_bvh_anim::bvh_anim::ChannelType;
 use bevy_bvh_anim::prelude::*;
+use bevy_motion_matching::BVH_SCALE_RATIO;
+use bevy_motion_matching::bvh_manager::bvh_player::SelectedBvhAsset;
+use bevy_motion_matching::draw_axes::{ColorPalette, DrawAxes};
+use bevy_motion_matching::motion::pose_data::Pose;
 
-use crate::draw_axes::{ColorPalette, DrawAxes};
-use crate::motion::pose_data::Pose;
 use crate::player::MovementConfig;
 use crate::scene_loader::MainScene;
 use crate::ui::config::{BvhTrailConfig, DrawMainArmature};
-use crate::BVH_SCALE_RATIO;
-
-use super::bvh_player::SelectedBvhAsset;
 
 pub struct BvhGizmosPlugin;
 

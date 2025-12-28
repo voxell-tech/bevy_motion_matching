@@ -1,7 +1,6 @@
 use bevy::prelude::*;
 use bevy_bvh_anim::prelude::*;
 
-pub mod bvh_gizmos;
 pub mod bvh_library;
 pub mod bvh_player;
 
@@ -13,7 +12,6 @@ impl Plugin for BvhManagerPlugin {
             BvhAssetPlugin,
             bvh_library::BvhLibraryPlugin,
             bvh_player::BvhPlayerPlugin,
-            bvh_gizmos::BvhGizmosPlugin,
         ));
     }
 }

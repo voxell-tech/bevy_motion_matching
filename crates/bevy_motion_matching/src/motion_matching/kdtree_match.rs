@@ -1,18 +1,18 @@
 use std::time::Instant;
 
 use bevy::prelude::*;
-use kdtree::distance::squared_euclidean;
 use kdtree::KdTree;
+use kdtree::distance::squared_euclidean;
 
-use crate::motion::chunk::ChunkIterator;
 use crate::motion::MotionData;
+use crate::motion::chunk::ChunkIterator;
+use crate::motion_matching::MotionMatchingResult;
 use crate::trajectory::{Trajectory, TrajectoryConfig};
-use crate::ui::play_mode::MotionMatchingResult;
-use crate::{Method, BVH_SCALE_RATIO};
+use crate::{BVH_SCALE_RATIO, Method};
 
 use super::{
-    MatchConfig, MatchTrajectory, MotionMatchingSet, NearestTrajectories, TrajectoryMatch,
-    PEAK_ALLOC,
+    MatchConfig, MatchTrajectory, MotionMatchingSet, NearestTrajectories, PEAK_ALLOC,
+    TrajectoryMatch,
 };
 
 pub struct KdTreeMatchPlugin;

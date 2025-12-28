@@ -2,13 +2,15 @@ use bevy::prelude::*;
 use bevy_bvh_anim::prelude::JointMatrices;
 
 use crate::{
-    draw_axes::ColorPalette,
-    motion::{chunk::ChunkIterator, trajectory_data::TrajectoryDataPoint, MotionData},
-    motion_matching::NearestTrajectories,
     player::PlayerMarker,
     trajectory::TrajectoryConfig,
-    ui::play_mode::{DrawNearestPoseArmature, DrawNearestTrajectory, MotionMatchingResult},
+    ui::play_mode::{DrawNearestPoseArmature, DrawNearestTrajectory},
+};
+use bevy_motion_matching::{
     BVH_SCALE_RATIO,
+    draw_axes::ColorPalette,
+    motion::{MotionData, chunk::ChunkIterator, trajectory_data::TrajectoryDataPoint},
+    motion_matching::{MotionMatchingResult, NearestTrajectories},
 };
 
 pub struct VisualizationPlugin;

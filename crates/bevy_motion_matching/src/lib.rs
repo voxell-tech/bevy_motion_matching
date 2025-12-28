@@ -1,21 +1,15 @@
 use bevy::prelude::*;
-use trajectory::Velocity;
 use transform2d::Transform2d;
 
 pub mod action;
 pub mod bvh_manager;
-pub mod camera;
 pub mod draw_axes;
 pub mod motion;
 pub mod motion_matching;
-pub mod player;
 pub mod record;
-pub mod scene_loader;
 pub mod testing;
 pub mod trajectory;
 pub mod transform2d;
-pub mod ui;
-pub mod visualization;
 
 pub const BVH_SCALE_RATIO: f32 = 0.01;
 pub const LARGE_EPSILON: f32 = 0.0001;
@@ -43,18 +37,11 @@ impl Plugin for MotionMatchingAppPlugin {
             }),
             transform2d::Transform2dPlugin,
             record::RecordPlugin::<Transform2d>::default(),
-            record::RecordPlugin::<Velocity>::default(),
-            trajectory::TrajectoryPlugin,
             action::ActionPlugin,
             motion::MotionPlugin,
-            scene_loader::SceneLoaderPlugin,
             bvh_manager::BvhManagerPlugin,
-            camera::CameraPlugin,
-            ui::UiPlugin,
-            player::PlayerPlugin,
             motion_matching::MotionMatchingPlugin,
             draw_axes::DrawAxesPlugin,
-            visualization::VisualizationPlugin,
         ))
         .add_plugins(testing::TestingPlugin);
 

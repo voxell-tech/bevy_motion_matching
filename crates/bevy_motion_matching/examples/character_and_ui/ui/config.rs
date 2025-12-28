@@ -3,10 +3,10 @@ use bevy::prelude::*;
 use bevy_bvh_anim::prelude::*;
 use bevy_egui::egui;
 
-use crate::bvh_manager::bvh_library::BvhLibrary;
-use crate::bvh_manager::bvh_player::{BvhPlayer, SelectedBvhAsset};
 use crate::scene_loader::{GroundPlane, MainScene};
-use crate::{GameMode, LARGE_EPSILON};
+use bevy_motion_matching::bvh_manager::bvh_library::BvhLibrary;
+use bevy_motion_matching::bvh_manager::bvh_player::{BvhPlayer, SelectedBvhAsset};
+use bevy_motion_matching::{GameMode, LARGE_EPSILON};
 
 use super::groupbox;
 

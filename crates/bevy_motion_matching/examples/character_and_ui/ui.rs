@@ -1,13 +1,14 @@
 use bevy::{ecs::system::SystemState, prelude::*};
 use bevy_egui::egui::{self, Color32};
 use bevy_egui::{EguiContexts, EguiPrimaryContextPass};
+use bevy_motion_matching::motion_matching::MotionMatchingResult;
+use play_mode::RunPresetDirection;
 
 #[cfg(not(feature = "debug"))]
 use bevy_egui::EguiPlugin;
 
 #[cfg(feature = "debug")]
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
-use play_mode::RunPresetDirection;
 
 use crate::player::ResetPlayer;
 
@@ -32,7 +33,7 @@ impl Plugin for UiPlugin {
             .insert_resource(RunPresetDirection(false))
             .init_resource::<config::DrawTrajectory>()
             .init_resource::<builder::BuildConfigs>()
-            .init_resource::<play_mode::MotionMatchingResult>()
+            .init_resource::<MotionMatchingResult>()
             .add_systems(PreUpdate, reset_mouse_in_ui)
             .add_systems(EguiPrimaryContextPass, right_panel.in_set(UiSystemSet));
     }

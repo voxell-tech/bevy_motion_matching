@@ -5,7 +5,7 @@ use bevy::{
 };
 use bevy_bvh_anim::{bvh_anim::ChannelType, prelude::*};
 
-use crate::{scene_loader::MainScene, GameMode};
+use crate::GameMode;
 
 pub struct BvhPlayerPlugin;
 
@@ -28,7 +28,7 @@ impl Plugin for BvhPlayerPlugin {
 
 fn generate_bone_map(
     mut commands: Commands,
-    q_character: Query<(Entity, &SceneRoot), (With<MainScene>, Without<JointMap>)>,
+    q_character: Query<(Entity, &SceneRoot), Without<JointMap>>,
     q_names: Query<&Name>,
     q_children: Query<&Children>,
     q_transforms: Query<&Transform>,
@@ -99,7 +99,7 @@ fn generate_bone_map(
 
 fn bvh_player(
     mut q_transforms: Query<&mut Transform>,
-    q_scene: Query<&JointMap, With<MainScene>>,
+    q_scene: Query<&JointMap>,
     time: Res<Time>,
     selected_bvh_asset: Res<SelectedBvhAsset>,
     bvh_assets: Res<Assets<BvhAsset>>,

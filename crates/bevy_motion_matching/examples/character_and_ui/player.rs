@@ -2,16 +2,16 @@ use bevy::prelude::*;
 use bevy_bvh_anim::prelude::*;
 use leafwing_input_manager::prelude::*;
 
-use crate::action::PlayerAction;
-use crate::bvh_manager::bvh_library::BvhLibrary;
-use crate::bvh_manager::bvh_player::{FrameData, JointMap};
-use crate::draw_axes::{ColorPalette, DrawAxes};
-use crate::motion::motion_player::MotionPlayerBundle;
 use crate::scene_loader::MainScene;
-use crate::trajectory::MovementDirection;
-use crate::transform2d::Transform2d;
 use crate::ui::play_mode::RunPresetDirection;
-use crate::MainSet;
+use bevy_motion_matching::MainSet;
+use bevy_motion_matching::action::PlayerAction;
+use bevy_motion_matching::bvh_manager::bvh_library::BvhLibrary;
+use bevy_motion_matching::bvh_manager::bvh_player::{FrameData, JointMap};
+use bevy_motion_matching::draw_axes::{ColorPalette, DrawAxes};
+use bevy_motion_matching::motion::motion_player::MotionPlayerBundle;
+use bevy_motion_matching::trajectory::MovementDirection;
+use bevy_motion_matching::transform2d::Transform2d;
 
 pub struct PlayerPlugin;
 
